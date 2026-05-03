@@ -1,154 +1,81 @@
 # Monster Girl Wave
+<img align="left" width="50%"   src="https://github.com/kubrvk/MonsterGirlWave/blob/main/Content/MonsterGirlWave/banner.jpg?raw=true"/>
+<h3> <a href="https://play.google.com/store/apps/details?id=com.Kubrick.MonsterGirlWave"><img src="https://img.shields.io/badge/Google_Play:-com.Kubrick.MonsterGirlWave-000000?style=flat-square&logo=google-play&logoColor=white&labelColor=000000" height="25"/> </a></h3>
 
-> **Top-down action survival** — Unreal Engine 5.7 · C++ · Android · Solo Development  
-> [ArtStation](https://www.artstation.com/kubrik)
+![](https://img.shields.io/badge/Mobile-0c5299?style=) ![](https://img.shields.io/badge/Wave--Rush-a17736?style=) ![](https://img.shields.io/badge/Random--Enemy-7b1717?style=) ![Blueprint](https://img.shields.io/badge/Blueprint-00599C?style=logo=c%2B%2B&logoColor=white)  ![Blueprint](https://img.shields.io/badge/Unreal_Engine_5.7-0E1128?style=for-the-badges&logo=unrealengine&logoColor=white)  ![Blueprint](https://img.shields.io/badge/Status-Shipped-success?style=for-the-badges) 
+<br>
+Fast-paced top-down survival game targeting Android. Face endless waves of procedurally composed enemies, escalating in size and diversity. Between waves, customize your build from a large weapon pool spanning firearms, launchers, and energy weapons.<br>
+
+The game operates on a **wave-rush loop**: survive the wave, upgrade, repeat , with global leaderboards and weekly tournament structures providing competitive longevity. The core technical challenges were: building a performant top-down enemy swarm system that handles high simultaneous enemy counts on mobile hardware, designing a wave composition engine that produces escalating difficulty without repetition, and sustaining 60 fps under dense particle and projectile load on mid-range Android devices.
+<br clear="left"/>
+<p align="center">
+<img src="https://play-lh.googleusercontent.com/xdiJa3CxPyRcLTwJH_Yk7udN9ikT4dnzqw3QLMDNmiR0wcnC-OAE82kwTWIYJahTWT6O8oOazvLDV9KKvJyf=w2560-h1440-rw" width="25%"/><img src="https://play-lh.googleusercontent.com/U1ThnF9l_Gqo0lRM-ENmZaJdQ75htxTguHCx9c2Y14hWfJL8FB7cbODkI05Yz4QOWiaoxcwiFX9V2t1TGaBQjv8=w2560-h1440-rw" width="25%"/><img src="https://play-lh.googleusercontent.com/p3HPLfIhEkOwdaPrsXzIMJUc0Hb4T56YqdQ1_dALwkPIB_AlSGqq8vUsMUd7vRtbCNyFn4jjx7XXrEcmS8GPEg=w2560-h1440-rw" width="25%"/><img src="https://play-lh.googleusercontent.com/N_SunhmeRk1UUn8IekV3LC0n9UFlHZI026ZNZbrzdPoaaAbBIPAzDj9XQpFu0AY8pja5jQIGiYDigh0l3UZ-cA=w2560-h1440-rw" width="25%"/>
+</p>
 
 ---
 
-## Overview
-
-Monster Girl Wave is a fast-paced top-down action survival game built in Unreal Engine 5.7 using C++, targeting Android. The player faces endless waves of procedurally composed enemy groups, each wave increasing in size, speed, and enemy type diversity. Between waves, a weapon upgrade selection system allows progressive build customization from a large weapon pool spanning firearms, launchers, and energy weapons.
-
-The game operates on a **wave-rush loop**: survive the wave, upgrade, repeat — with global leaderboards and weekly tournament structures providing competitive longevity. The core technical challenges were: building a performant top-down enemy swarm system that handles high simultaneous enemy counts on mobile hardware, designing a wave composition engine that produces escalating difficulty without repetition, and sustaining 60 fps under dense particle and projectile load on mid-range Android devices.
-
-All gameplay systems, enemy AI, wave generation, weapon framework, UI, and assets were developed by a single developer.
-
----
-
-## Engine & Technical Stack
+## Technical Detail
 
 | Layer | Technology |
 |---|---|
 | Engine | Unreal Engine 5.7 |
-| Primary Language | C++ (gameplay, AI, systems) |
+| Primary Language | Blueprint (gameplay, AI, systems) |
 | Platform | Android (primary) |
-| Input | Custom touch input — virtual joystick + auto-aim |
-| AI | Unreal Behavior Tree + custom C++ EnemyAIController |
-| Physics | Chaos — projectile collision, knockback |
+| Input | Custom touch input , virtual joystick + auto-aim |
+| AI | Unreal Behavior Tree + custom Blueprint EnemyAIController |
+| Physics | Chaos , projectile collision, knockback |
 | Rendering | Mobile forward renderer, scalable quality tiers |
 | Leaderboards | Platform online services (Google Play Games) |
 | Build | Android SDK/NDK, Gradle, UE5 Android packaging |
-| 3D / 2D Pipeline | ZBrush → Maya → Substance Painter → UE5 |
+| 3D / 2D Pipeline | Blender, UE5 |
+
+---
+<img src="https://play-lh.googleusercontent.com/p3HPLfIhEkOwdaPrsXzIMJUc0Hb4T56YqdQ1_dALwkPIB_AlSGqq8vUsMUd7vRtbCNyFn4jjx7XXrEcmS8GPEg=w2560-h1440-rw" width="100%"/>
+
+# Core Systems
 
 ---
 
-## Architecture Overview
+## 1. Wave System
 
-```
-MonsterGirlWave/
-├── Source/
-│   ├── Core/
-│   │   ├── MGWCharacter.h/.cpp                # Player character, movement, combat
-│   │   ├── MGWGameMode.h/.cpp                 # Wave sequencing, state machine, score
-│   │   └── MGWPlayerController.h/.cpp         # Touch input routing, HUD init
-│   ├── Systems/
-│   │   ├── TouchInputSystem/                   # Virtual joystick, aim assist, fire input
-│   │   ├── WaveSystem/                         # Wave composition, spawning, escalation
-│   │   ├── EnemySpawnSystem/                   # Spawn point selection, density, pooling
-│   │   ├── WeaponSystem/                       # Weapon registry, fire logic, projectiles
-│   │   ├── UpgradeSystem/                      # Post-wave upgrade selection, build state
-│   │   ├── EnemyAISystem/                      # Per-type behavior, weak spot, aggro
-│   │   ├── DifficultySystem/                   # Wave power budget, enemy tier unlocks
-│   │   ├── ProjectileSystem/                   # Pooled projectiles, hit resolution
-│   │   ├── LeaderboardSystem/                  # Score submission, Google Play Games API
-│   │   ├── TournamentSystem/                   # Weekly cycle, reward distribution
-│   │   └── PerformanceSystem/                  # Adaptive quality, thermal management
-│   ├── Enemies/
-│   │   ├── MGWEnemyBase.h/.cpp                # Base enemy class, weak spot, aggro
-│   │   ├── Runner/                             # Fast, low-HP melee variant
-│   │   ├── Bruiser/                            # Slow, high-HP, knockback-resistant
-│   │   ├── RangedAttacker/                     # Projectile-firing enemy variant
-│   │   └── [Additional variants...]
-│   └── UI/
-│       ├── HUD/                                # HP bar, wave counter, score, weapon slots
-│       ├── UpgradeWidget/                      # Post-wave upgrade card selection
-│       ├── LeaderboardWidget/                  # Global board, weekly tournament UI
-│       └── Menus/                              # Main menu, loadout, settings
-```
+`BP_WaveSystem` is the central controller for session progression. It operates as a state machine governing the full wave lifecycle.
 
----
+### Wave Composition
 
-## Core Systems: Technical Detail
+- Each wave is defined by a `WaveConfig` data structure generated at runtime by `BP_DifficultySystem`.
+- `WaveConfig` contains: `WaveIndex` (Integer), `PowerBudget` (Float), `SpawnGroups` (Array of SpawnGroup), `SpawnInterval` (Float), `GroupSpawnDelay` (Float).
+- `PowerBudget` is the primary difficulty axis — each enemy type has an `EnemyPowerCost` (Float) in its Data Asset; the composition logic fills the budget with enemy groups.
 
-### 1. Wave System
+### Wave Composition Algorithm
 
-`UWaveSystem` is the central controller for session progression. It operates as a state machine governing the full wave lifecycle.
+`BP_DifficultySystem , ComposeWave(WaveIndex)` generates the `WaveConfig`:
 
-**Wave State Machine:**
+1. Compute `PowerBudget = BaseBudget + (WaveIndex × BudgetScalePerWave)`.
+2. Determine unlocked enemy pool — enemy types are gated behind `UnlockWave` thresholds.
+3. Fill budget: weighted-random selection from the unlocked pool; each selection deducts `EnemyPowerCost` from the remaining budget.
+4. Group selected enemies into spawn groups (spatially clustered spawns).
+5. Apply late-wave modifiers at configurable thresholds: speed multipliers, health multipliers, ranged attacker bias.
 
-```
-LOBBY
-  │
-  ▼
-WAVE_START ──► WAVE_ACTIVE ──► WAVE_CLEAR
-                   │                │
-                   ▼                ▼
-              PLAYER_DEATH     UPGRADE_PHASE
-                                    │
-                                    ▼
-                               WAVE_START (next wave)
-```
+### Spawn Execution
 
-**Wave Composition:**
-- Each wave is defined by a `FWaveConfig` generated at runtime by `UDifficultySystem`.
-- `FWaveConfig` contains: `int32 WaveIndex`, `float PowerBudget`, `TArray<FSpawnGroup> SpawnGroups`, `float SpawnInterval`, `float GroupSpawnDelay`.
-- `PowerBudget` is the primary difficulty axis — each enemy type has a `float EnemyPowerCost` in its data asset; the composition engine fills the budget with enemy groups.
-
-**Wave Composition Algorithm:**
-- `UDifficultySystem::ComposeWave(int32 WaveIndex)` generates the `FWaveConfig`:
-  1. Compute `PowerBudget = BaseBudget + (WaveIndex * BudgetScalePerWave)`.
-  2. Determine unlocked enemy pool: enemy types gate behind `UnlockWave` thresholds.
-  3. Fill budget: weighted-random selection from unlocked pool; each selection deducts `EnemyPowerCost` from remaining budget.
-  4. Group selected enemies into spawn groups (spatially clustered spawns).
-  5. Apply late-wave modifiers at configurable thresholds: speed multipliers, health multipliers, ranged attacker bias.
-
-```cpp
-FWaveConfig UDifficultySystem::ComposeWave(int32 WaveIndex)
-{
-    FWaveConfig Config;
-    Config.WaveIndex = WaveIndex;
-    Config.PowerBudget = BaseBudget + (WaveIndex * BudgetScalePerWave);
-
-    float RemainingBudget = Config.PowerBudget;
-    FRandomStream Stream(SessionSeed + WaveIndex);
-
-    TArray<UEnemyDataAsset*> UnlockedPool = GetUnlockedEnemyPool(WaveIndex);
-
-    while (RemainingBudget > 0.f && UnlockedPool.Num() > 0)
-    {
-        UEnemyDataAsset* Selected = SelectWeightedEnemy(UnlockedPool, Stream, WaveIndex);
-        if (Selected->PowerCost > RemainingBudget) break;
-
-        Config.SpawnGroups.Last().Enemies.Add(Selected);
-        RemainingBudget -= Selected->PowerCost;
-
-        if (Config.SpawnGroups.Last().Enemies.Num() >= MaxGroupSize)
-            Config.SpawnGroups.Add(FSpawnGroup());
-    }
-
-    ApplyWaveModifiers(Config, WaveIndex);
-    return Config;
-}
-```
-
-**Spawn Execution:**
-- `UEnemySpawnSystem` executes the `FWaveConfig` over time.
-- Spawn points are `ASpawnPointActor` instances placed around the arena perimeter; spawn point selection uses furthest-from-player logic to avoid spawn-camping.
+- `BP_EnemySpawnSystem` executes the `WaveConfig` over time.
+- Spawn points are `BP_SpawnPoint` actors placed around the arena perimeter; spawn point selection uses furthest-from-player logic to avoid spawn-camping.
 - Groups spawn with `GroupSpawnDelay` between them — staggered arrival prevents single-frame enemy floods.
-- Wave complete condition: `ActiveEnemyCount == 0` and `RemainingSpawnQueue.IsEmpty()`.
+- Wave complete condition: `ActiveEnemyCount == 0` and `RemainingSpawnQueue` is empty.
 
 ---
 
-### 2. Enemy AI System
+## 2. Enemy AI System
 
-Each enemy type is a `AMGWEnemyBase` subclass with a dedicated Behavior Tree. Shared base logic is in `AMGWEnemyBase`; type-specific overrides live in subclasses and data assets.
+Each enemy type is a child Blueprint of `BP_EnemyBase` with a dedicated Behavior Tree. Shared base logic lives in `BP_EnemyBase`; type-specific overrides are in child Blueprints and Data Assets.
 
-**Base Enemy Architecture:**
-- `FEnemyStats` struct per type: `MaxHP`, `MoveSpeed`, `AttackDamage`, `AttackRange`, `AttackCooldown`, `PowerCost`, `WeakSpotDamageMultiplier`, `EnemyTier`, `UnlockWave`.
-- `FWeakSpotConfig`: socket name on the skeletal mesh, multiplier, optional visual indicator toggle.
-- All stats defined in `UEnemyDataAsset` — no hardcoded values in C++ class bodies.
+### Base Enemy Architecture
 
-**Enemy Types:**
+- `EnemyStats` struct per type: `MaxHP`, `MoveSpeed`, `AttackDamage`, `AttackRange`, `AttackCooldown`, `PowerCost`, `WeakSpotDamageMultiplier`, `EnemyTier`, `UnlockWave`.
+- `WeakSpotConfig`: socket name on the Skeletal Mesh, damage multiplier, optional visual indicator toggle.
+- All stats defined in `DA_Enemy` (Data Asset) — no hardcoded values inside Blueprint class defaults.
+
+### Enemy Types
 
 | Type | Movement | Attack Style | HP | Weak Spot |
 |---|---|---|---|---|
@@ -158,48 +85,52 @@ Each enemy type is a `AMGWEnemyBase` subclass with a dedicated Behavior Tree. Sh
 | Swarm | Fast, small, group movement | Contact damage | Very Low | None (kill count reliant) |
 | Elite | Varied | Phase-based: ranged then melee | High | Changes per phase |
 
-**AI State Per Type:**
+### AI States Per Type
 
-*Runner:*
+**Runner:**
 ```
-Idle → DetectPlayer → Sprint → MeleeAttack → (cooldown) → Sprint
-```
-
-*Bruiser:*
-```
-Idle → DetectPlayer → Advance → [ChargeDecision] → Charge → Impact → Recovery → Advance
+Idle , DetectPlayer , Sprint , MeleeAttack , (cooldown) , Sprint
 ```
 
-*Ranged Attacker:*
+**Bruiser:**
 ```
-Idle → DetectPlayer → PositionToRange → FireCooldown → Fire → Reposition → FireCooldown
+Idle , DetectPlayer , Advance , [ChargeDecision] , Charge , Impact , Recovery , Advance
 ```
 
-**Weak Spot System:**
-- `UWeakSpotComponent` attached to each enemy with a socket-aligned `USphereComponent`.
-- Hit resolution checks if the projectile's impact point is within `WeakSpotRadius` of the weak spot component's world location.
-- Weak spot hit: `Damage *= WeakSpotDamageMultiplier`; optional visual pulse on confirmation.
-- Weak spot location communicated to player via a subtle highlight material parameter on the mesh — not a floating icon, preserving visual cleanliness.
+**Ranged Attacker:**
+```
+Idle , DetectPlayer , PositionToRange , FireCooldown , Fire , Reposition , FireCooldown
+```
 
-**Aggro System:**
-- `AGgroManager` singleton tracks `TMap<AMGWEnemyBase*, float> AggroTable`.
-- Player actions generate aggro events: taking damage (high aggro), dealing damage (moderate), using area weapons (area aggro to all enemies in radius).
-- Enemies query `AggroManager` to confirm target — allows future multi-player extension without changing enemy AI logic.
-- All enemies target the player in single-player — aggro table primarily used for priority ordering when player uses distraction mechanics.
+### Weak Spot System
 
-**Knockback Resistance:**
-- `float KnockbackResistance` stat on `FEnemyStats` — Bruiser class has near-full resistance; Runners have none.
-- Knockback applied as `AddImpulse`; effective magnitude: `ImpulseForce * (1.f - KnockbackResistance)`.
+- A `WeakSpot` Scene Component (Sphere Collision) is attached to each enemy, aligned to its designated socket.
+- On projectile hit, the system checks if the impact point falls within `WeakSpotRadius` of the weak spot component's world location.
+- Weak spot hit: `Damage × WeakSpotDamageMultiplier` is applied; an optional visual pulse plays on confirmation.
+- The weak spot location is communicated to the player via a subtle highlight material parameter on the mesh — not a floating icon, preserving visual cleanliness.
+
+### Aggro System
+
+- `BP_AggroManager` (singleton) tracks a Map of `Enemy Reference , Aggro Float`.
+- Player actions generate aggro events: taking damage (high aggro), dealing damage (moderate), using area weapons (area aggro broadcast to all enemies in radius).
+- Enemies query `BP_AggroManager` to confirm their current target — this allows future multiplayer extension without changing enemy AI logic.
+- In single-player, all enemies target the player; the aggro table is primarily used for priority ordering when distraction mechanics are active.
+
+### Knockback Resistance
+
+- `KnockbackResistance` (Float) is a stat in the `EnemyStats` struct — Bruiser has near-full resistance; Runners have none.
+- Knockback is applied via **Add Impulse**; effective magnitude: `ImpulseForce × (1 − KnockbackResistance)`.
 
 ---
 
-### 3. Weapon System
+## 3. Weapon System
 
-**Weapon Registry:**
-- All weapons defined via `UWeaponDataAsset`: `EWeaponCategory` (Firearm / Launcher / Energy), fire rate, damage, projectile class, spread, magazine size, reload time, ammo type, upgrade slots.
-- `UWeaponSystem` maintains the player's active weapon set as `TArray<UWeaponInstance*>` — runtime instances wrapping their data asset with current ammo, upgrade state, and cooldown timers.
+### Weapon Registry
 
-**Weapon Categories:**
+- All weapons are defined in `DA_Weapon` (Data Asset): `WeaponCategory` Enum (Firearm / Launcher / Energy), fire rate, damage, projectile class, spread, magazine size, reload time, ammo type, upgrade slots.
+- `BP_WeaponSystem` maintains the player's active weapon set as an **Array of WeaponInstance** — runtime objects wrapping their Data Asset with current ammo, upgrade state, and cooldown timers.
+
+### Weapon Categories
 
 | Category | Examples | Fire Mode | Special |
 |---|---|---|---|
@@ -207,174 +138,178 @@ Idle → DetectPlayer → PositionToRange → FireCooldown → Fire → Repositi
 | Launcher | Grenade Launcher, Rocket, Mine Layer | Projectile arc | AoE damage, knockback |
 | Energy | Laser, Plasma Cannon, Chain Lightning | Beam / Charge / Bounce | Elemental effects, no reload |
 
-**Fire Logic:**
-- Auto-fire: `FTimerHandle` fires at `1.f / FireRate` interval while fire input held.
-- Burst: fires N projectiles with `BurstInterval` delay between each; `BTimerHandle` sequences shots.
-- Beam (Energy): `ULineTraceComponent` sweeps each tick while active; applies damage per-tick via `DamagePerSecond * DeltaTime`.
-- Charge: hold input accumulates `ChargeLevel` (0–1 over `ChargeTime`); release fires projectile with damage scaled by `ChargeDamageMultiplier * ChargeLevel`.
+### Fire Logic
 
-**Projectile System:**
-- `AProjectileBase` subclasses per damage profile: standard, explosive, energy, bouncing.
-- All projectiles pooled via `UProjectilePool` — pre-warmed at session start.
-- Explosive: on hit, `UGameplayStatics::ApplyRadialDamage` with `ExplosionRadius` and falloff curve.
-- Bouncing: on hit, reflects direction via `FVector::MirrorByVector(HitNormal)`; bounce count tracked; final bounce detonates as explosive.
-- Chain Lightning: on hit, evaluates `TArray<AMGWEnemyBase*>` within `ChainRadius` sorted by distance; applies damage to N nearest via `UGameplayStatics::ApplyDamage` with `ChainDamageFalloff` per hop.
+- **Auto-fire:** A looping Timer fires at `1 / FireRate` interval while the fire input is held.
+- **Burst:** Fires N projectiles with `BurstInterval` delay between each shot, sequenced via a Timer.
+- **Beam (Energy):** A Line Trace runs each tick while the weapon is active; applies `DamagePerSecond × DeltaTime` per tick.
+- **Charge:** Holding the input accumulates `ChargeLevel` (0–1 over `ChargeTime`); releasing fires a projectile with damage scaled by `ChargeDamageMultiplier × ChargeLevel`.
 
-**Ammo & Reload:**
-- Ammo pools per `EAmmoType` tracked on `UWeaponSystem`.
-- Reload: plays reload montage, applies `FTimerHandle` delay, restores magazine on completion.
-- Energy weapons use a `ManaPool` resource instead of ammo — regenerates over time.
+### Projectile System
 
-**Auto-Aim:**
-- `UAutoAimComponent` evaluates enemies within `AimAssistRadius` and `AimAssistConeAngle` from the player's current fire direction.
-- Selects the highest-threat target (nearest to crosshair vector, within cone) and applies a soft pull to the fire direction.
-- Pull magnitude configurable — strong enough to compensate for touch input imprecision, subtle enough not to feel like aimbot.
-- Weak spot auto-aim: at close range, applies additional pull toward the nearest enemy's weak spot socket position.
+- `BP_ProjectileBase` child Blueprints per damage profile: standard, explosive, energy, bouncing.
+- All projectiles are managed by `BP_ProjectilePool` — pre-warmed at session start. **No Spawn Actor / Destroy Actor during gameplay** — pool acquire/release only.
+- **Explosive:** On hit, fires an **Apply Radial Damage** node with `ExplosionRadius` and a falloff curve.
+- **Bouncing:** On hit, reflects direction using **Mirror Vector by Normal**; bounce count tracked; final bounce detonates as explosive.
+- **Chain Lightning:** On hit, collects all enemies within `ChainRadius` sorted by distance; applies damage to N nearest using **Apply Damage** with `ChainDamageFalloff` per hop.
+
+### Ammo & Reload
+
+- Ammo pools per `AmmoType` Enum are tracked on `BP_WeaponSystem`.
+- Reload: plays the reload Animation Montage, starts a Timer delay, then restores the magazine on completion.
+- Energy weapons use a `ManaPool` resource instead of ammo — regenerates passively over time.
+
+### Auto-Aim
+
+- `BP_AutoAimComponent` evaluates all enemies within `AimAssistRadius` and `AimAssistConeAngle` from the player's current fire direction.
+- Selects the highest-threat target (nearest to the crosshair vector, within the cone) and applies a soft pull to the fire direction.
+- Pull magnitude is configurable — strong enough to compensate for touch input imprecision, subtle enough not to feel like an aimbot.
+- **Weak spot auto-aim:** At close range, applies an additional pull toward the nearest enemy's weak spot socket position.
 
 ---
 
-### 4. Upgrade System
+## 4. Upgrade System
 
-Post-wave upgrade selection is the primary build expression mechanic. After each wave clear, the player selects one of three presented upgrade cards.
+Post-wave upgrade selection is the primary build expression mechanic. After each wave clear, the player chooses one of three presented upgrade cards.
 
-**Upgrade Card Generation:**
-- `UUpgradeSystem::GenerateUpgradeOptions(int32 WaveIndex, FPlayerBuildState BuildState)` produces a `TArray<FUpgradeOption>` of size 3.
-- Upgrade pool filtered by: weapon affinity (upgrades relevant to owned weapons weighted higher), build archetype (if player has 2+ elemental weapons, elemental upgrades weighted higher), and wave index (power upgrades gated behind minimum wave thresholds).
-- Deduplication: same upgrade cannot appear twice in the same offer.
-- Rarity tier: `Common / Rare / Epic` — higher tiers appear at lower base weight, scaling up with wave index.
+### Upgrade Card Generation
 
-**Upgrade Categories:**
+`BP_UpgradeSystem , GenerateUpgradeOptions(WaveIndex, PlayerBuildState)` produces an Array of 3 `UpgradeOption` structs.
+
+- **Upgrade pool filtering:** Weapon affinity (upgrades relevant to owned weapons weighted higher), build archetype (if the player has 2+ elemental weapons, elemental upgrades are weighted higher), and wave index (power upgrades gated behind minimum wave thresholds).
+- **Deduplication:** The same upgrade cannot appear twice in the same offer.
+- **Rarity tier:** Common / Rare / Epic — higher tiers appear at lower base weight, scaling up with wave index.
+
+### Upgrade Categories
 
 | Category | Example Effects |
 |---|---|
-| Weapon Stat | +damage, +fire rate, +magazine, -reload time |
-| Projectile Modifier | Adds pierce, adds bounce, splits on hit, explodes on hit |
-| Player Stat | +max HP, +move speed, +pickup radius, +regen |
-| Elemental Add | Adds burn/freeze/shock proc to a weapon |
+| Weapon Stat | +Damage, +Fire Rate, +Magazine, −Reload Time |
+| Projectile Modifier | Adds Pierce, adds Bounce, splits on hit, explodes on hit |
+| Player Stat | +Max HP, +Move Speed, +Pickup Radius, +Regen |
+| Elemental Add | Adds Burn / Freeze / Shock proc to a weapon |
 | Passive Ability | Auto-collect coins in radius, reload on kill, HP on kill |
 | Weapon Unlock | Adds a new weapon to the active weapon set |
 
-**Build State:**
-- `FPlayerBuildState` accumulates all selected upgrades as `TArray<FAppliedUpgrade>`.
-- Each frame, `UWeaponSystem` and `UCharacterStatComponent` query `BuildState` — stats are derived dynamically from base values + all active upgrade modifiers.
+### Build State
+
+- `PlayerBuildState` struct accumulates all selected upgrades as an **Array of AppliedUpgrade**.
+- Each frame, `BP_WeaponSystem` and `BP_CharacterStatComponent` read from `PlayerBuildState` — stats are derived dynamically from base values + all active upgrade modifiers.
 - This avoids baking upgrade effects into permanent state, allowing future respec or prestige mechanics without architectural changes.
-
-```cpp
-float UCharacterStatComponent::GetFinalStat(EPlayerStat Stat) const
-{
-    float Base = BaseStats.GetStat(Stat);
-    float Additive = 0.f;
-    float Multiplicative = 1.f;
-
-    for (const FAppliedUpgrade& Upgrade : BuildState->ActiveUpgrades)
-    {
-        for (const FStatModifier& Mod : Upgrade.StatModifiers)
-        {
-            if (Mod.TargetStat != Stat) continue;
-            if (Mod.Type == EModifierType::Additive) Additive += Mod.Value;
-            else Multiplicative *= (1.f + Mod.Value);
-        }
-    }
-
-    return (Base + Additive) * Multiplicative;
-}
-```
 
 ---
 
-### 5. Touch Input System
+## 5. Touch Input System
 
 Top-down mobile controls use a **left-side virtual joystick** for movement and **right-side tap/hold** for firing, with auto-aim handling targeting.
 
-**Virtual Joystick:**
-- `UVirtualJoystickComponent` renders a floating joystick UI anchored to the first touch-down point on the left half of the screen (dynamic anchor — not fixed position).
-- Joystick input vector: `(TouchCurrentPos - JoystickAnchor).GetSafeNormal()` clamped to `JoystickRadius`.
-- Dead zone: input below `DeadZoneRadius` treated as zero — prevents drift from imprecise thumb position.
-- `InputVector` passed to `UCharacterMovementComponent` each tick as movement direction.
+### Virtual Joystick
 
-**Fire Input:**
+- `BP_VirtualJoystick` renders a floating joystick UI anchored to the first touch-down point on the left half of the screen (dynamic anchor — not a fixed position).
+- Joystick input vector: `(TouchCurrentPos − JoystickAnchor)` normalized, clamped to `JoystickRadius`.
+- **Dead zone:** Input below `DeadZoneRadius` is treated as zero — prevents drift from imprecise thumb placement.
+- The resulting `InputVector` is passed to the **Character Movement Component** each tick as the movement direction.
+
+### Fire Input
+
 - Right half of screen: touch-down begins firing (auto-fire active while held).
-- No manual aim input — `UAutoAimComponent` handles target selection.
-- Tap on right side: fires single shot; hold: continuous fire at weapon's fire rate.
+- No manual aim input — `BP_AutoAimComponent` handles all target selection.
+- Tap on right side: fires a single shot. Hold: continuous fire at the weapon's fire rate.
 
-**Multi-Touch:**
-- Left and right zones tracked independently — simultaneous movement + fire fully supported.
-- Up to 2 simultaneous touch points handled: index 0 = left zone (movement), index 1 = right zone (fire). Additional touches ignored.
+### Multi-Touch
 
-**Weapon Switch:**
+- Left and right zones are tracked independently — simultaneous movement + fire is fully supported.
+- Up to 2 simultaneous touch points are handled: index 0 = left zone (movement), index 1 = right zone (fire). Additional touches are ignored.
+
+### Weapon Switch
+
 - Swipe up on right zone while not firing: cycle to next weapon.
-- Implemented via: track `TouchDuration` and `TouchDelta`; if delta exceeds swipe threshold before fire threshold duration, classify as weapon-switch swipe rather than fire input.
+- Logic: track `TouchDuration` and `TouchDelta`; if delta exceeds the swipe threshold before the fire threshold duration, classify as a weapon-switch swipe rather than a fire input.
 
 ---
 
-### 6. Leaderboard & Tournament System
+## 6. Leaderboard & Tournament System
 
-**Leaderboard:**
-- `ULeaderboardSystem` wraps Google Play Games API via UE5's `OnlineSubsystem` interface.
-- Score submission: `IOnlineLeaderboards::WriteLeaderboardScore` called on run-end with `FinalScore`.
-- Score retrieval: `IOnlineLeaderboards::ReadLeaderboardsForFriends` + global board; results cached in `FLeaderboardCache` for offline display.
-- Display: `ULeaderboardWidget` renders paginated board with player rank highlight; async refresh on widget open.
+### Leaderboard
 
-**Weekly Tournament:**
-- `UTournamentSystem` manages weekly cycle state: `CycleStartTime`, `CycleEndTime`, `TournamentLeaderboardID`.
-- Cycle determined server-side; client queries tournament status on session start.
-- Separate leaderboard ID per tournament cycle — historical cycles preserved.
-- Reward tiers defined in `FTournamentRewardConfig` data asset: rank thresholds → reward item sets.
-- Reward distribution: on cycle end, server-side validation; client receives `FPendingReward` on next login, claimed via `UTournamentSystem::ClaimPendingRewards`.
+- `BP_LeaderboardSystem` wraps the Google Play Games API via the Online Subsystem interface.
+- **Score submission:** `Write Leaderboard Score` is called on run-end with `FinalScore`.
+- **Score retrieval:** Reads leaderboards for friends and the global board; results are cached in a `LeaderboardCache` struct for offline display.
+- **Display:** `WBP_Leaderboard` renders a paginated board with player rank highlight; async refresh occurs on widget open.
 
-**Score Composition:**
-- `FinalScore = (WavesCleared * WaveScoreBase) + (EnemiesKilled * KillScore) + (WeakSpotKills * WeakSpotBonus) + (DamageTaken == 0 per wave ? NoDamageBonus : 0)`.
-- Multipliers: active upgrade count, difficulty modifier (if player declined upgrades — an intentional hardmode option).
+### Weekly Tournament
+
+- `BP_TournamentSystem` manages the weekly cycle state: `CycleStartTime`, `CycleEndTime`, `TournamentLeaderboardID`.
+- The cycle is determined server-side; the client queries tournament status on session start.
+- A separate leaderboard ID is used per tournament cycle — historical cycles are preserved.
+- Reward tiers are defined in `DA_TournamentReward` (Data Asset): rank thresholds , reward item sets.
+- **Reward distribution:** On cycle end, server-side validation occurs; the client receives a `PendingReward` struct on next login, claimed via `BP_TournamentSystem , ClaimPendingRewards`.
+
+### Score Composition
+
+```
+FinalScore = (WavesCleared × WaveScoreBase)
+           + (EnemiesKilled × KillScore)
+           + (WeakSpotKills × WeakSpotBonus)
+           + (NoDamageBonus if zero damage taken that wave)
+```
+
+**Multipliers:** active upgrade count, difficulty modifier (if the player declined upgrades — an intentional hard-mode option).
 
 ---
 
-### 7. Mobile Performance & Optimization
+## 7. Mobile Performance & Optimization
 
-Target: **60 fps on mid-range Android hardware** under peak swarm density (50+ simultaneous enemies, active projectiles, particle effects).
+**Target: 60 fps on mid-range Android hardware** under peak swarm density (50+ simultaneous enemies, active projectiles, and particle effects).
 
-**Enemy Count Management:**
-- `UEnemySpawnSystem` enforces a `MaxSimultaneousEnemies` cap — additional enemies from the wave queue are held until active count drops below threshold.
-- Off-screen enemies: tick rate reduced to 10Hz for enemies beyond `FullTickRadius`; full tick only within player proximity.
-- Animation LOD: `USkeletalMeshComponent::AnimationUpdateRateParams` — distant enemies run animations at reduced frame rate.
-- Physics: knockback impulses only applied for enemies within camera frustum; off-screen enemies receive instant position correction.
+### Enemy Count Management
 
-**Projectile Pooling:**
-- `UProjectilePool` pre-warms N instances of each projectile class at session start.
-- No `SpawnActor` / `DestroyActor` during gameplay — pool acquire/release only.
-- Pool size tuned per weapon: high fire-rate weapons get larger pools; launcher projectiles get smaller (fewer in flight simultaneously).
+- `BP_EnemySpawnSystem` enforces a `MaxSimultaneousEnemies` cap — additional enemies from the wave queue are held until the active count drops below the threshold.
+- **Off-screen enemies:** Tick rate reduced to 10 Hz for enemies beyond `FullTickRadius`; full tick only within player proximity.
+- **Animation LOD:** Distant enemies run animations at a reduced frame rate via Animation Update Rate settings on the Skeletal Mesh Component.
+- **Physics:** Knockback impulses are only applied for enemies within the camera frustum; off-screen enemies receive instant position correction instead.
 
-**Rendering Budget:**
+### Projectile Pooling
+
+- `BP_ProjectilePool` pre-warms N instances of each projectile Blueprint class at session start.
+- **No Spawn Actor / Destroy Actor during gameplay** — pool acquire/release only.
+- Pool size is tuned per weapon: high fire-rate weapons get larger pools; launcher projectiles get smaller (fewer in flight simultaneously).
+
+### Rendering Budget
+
 - Mobile forward renderer; target < 130 draw calls per frame.
-- Enemy meshes use `UHierarchicalInstancedStaticMeshComponent` for same-type enemies — one draw call per enemy type regardless of count.
-- Projectile meshes: instanced rendering via `UInstancedStaticMeshComponent` on `UProjectilePool`.
+- Same-type enemies use **Hierarchical Instanced Static Mesh Component** — one draw call per enemy type regardless of count.
+- Projectile meshes use **Instanced Static Mesh Component** on `BP_ProjectilePool`.
 - Texture budget: enemy max 512×512 ASTC; player 1024×1024 ASTC; VFX atlases 512×512.
-- Particle cap: Niagara `MaxParticleCount` per system; budget-shared across all simultaneous emitters via `UNiagaraBudgetPlugin` settings.
+- Particle cap: Niagara `MaxParticleCount` per system; budget shared across all simultaneous emitters via Niagara Budget Plugin settings.
 
-**Tick Optimization:**
-- `UWaveSystem` state transitions: event-driven, not polled.
-- `ULeaderboardSystem` operations: async, non-blocking — never on game thread.
-- Score update: `OnScoreChanged` delegate → UI update; not polled per tick.
-- `UDifficultySystem::ComposeWave`: runs during wave-clear / upgrade phase — never during active combat.
+### Tick Optimization
 
-**Adaptive Quality:**
-- `UPerformanceSystem` monitors rolling frame time average (identical architecture to [Royal Jump](https://play.google.com/store/apps/details?id=com.Kubrick.RoyalJump) and [Real Cat Runner](#)).
-- Quality tiers control: enemy render distance, particle density cap, shadow quality, post-process features.
-- Tiers drop on sustained overrun; restore on sustained recovery.
+- `BP_WaveSystem` state transitions are **event-driven**, not polled each tick.
+- `BP_LeaderboardSystem` operations are **async and non-blocking** — never executed on the game thread.
+- Score updates use an **OnScoreChanged Event Dispatcher** , UI update; not polled per tick.
+- `BP_DifficultySystem , ComposeWave` runs during the wave-clear / upgrade phase — never during active combat.
 
-**Memory:**
-- Enemy assets streamed per wave tier: tier 1 enemies loaded at boot; higher-tier enemies async-loaded as `UTournamentSystem` detects wave approach.
-- `TSoftObjectPtr` on all enemy and weapon data asset references.
-- Pooled actors never destroyed — GC pressure near-zero during active gameplay.
+### Adaptive Quality
 
-**Android-Specific:**
+- `BP_PerformanceSystem` monitors a rolling frame time average.
+- Quality tiers control: enemy render distance, particle density cap, shadow quality, and post-process features.
+- Tiers drop on sustained frame overrun; restore on sustained recovery.
+
+### Memory
+
+- Enemy assets are streamed per wave tier: Tier 1 enemies are loaded at boot; higher-tier enemies are async-loaded (using **Soft Object References**) as `BP_TournamentSystem` detects the approaching wave.
+- All enemy and weapon Data Asset references use **Soft Object References**.
+- Pooled actors are never destroyed — GC pressure is near-zero during active gameplay.
+
+### Android-Specific
+
 - Portrait orientation locked.
 - `r.MobileHDR=0` — standard forward renderer.
-- `r.Shadow.CSM.MaxCascades=1` on mobile device profile.
+- `r.Shadow.CSM.MaxCascades=1` on the mobile device profile.
 - ASTC texture compression; ETC2 fallback via App Bundle split.
-- Haptic feedback: `FAndroidApplication::Vibrate` on player damage, wave clear, and upgrade selection.
-- Google Play Games integration: Play Games SDK linked via UE5 Android build config.
-
----
+- **Haptic feedback:** Play Haptic Feedback on player damage, wave clear, and upgrade selection.
+- Google Play Games integration via UE5 Android build config.
 
 ## Build & Packaging
 
@@ -407,16 +342,16 @@ Target: **60 fps on mid-range Android hardware** under peak swarm density (50+ s
 
 | Category | Detail |
 |---|---|
-| Developer count | 1 (solo) |
+| Developer count | 1 |
 | Engine | Unreal Engine 5.7 |
-| Languages | C++ |
+| Languages | Blueprint |
 | Platform | Android |
 | Enemy types | 5+ with distinct AI behaviors |
 | Weapon categories | 3 (Firearm, Launcher, Energy) |
 | Upgrade categories | 6 |
 | Online features | Global leaderboard, weekly tournament |
 | Gameplay systems | 11 discrete systems (see above) |
-| Development tools | UE5 Editor, Android Studio, ZBrush, Maya, Substance Painter |
+| Development tools | UE5 Editor, Android Studio, Blender |
 
 ---
 
@@ -424,21 +359,18 @@ Target: **60 fps on mid-range Android hardware** under peak swarm density (50+ s
 
 | Project | Description |
 |---|---|
-| [Royal Jump](https://play.google.com/store/apps/details?id=com.Kubrick.RoyalJump) | Mobile precision platformer; touch controls, physics movement — UE5.7 |
-| [TIME SOUL](https://store.steampowered.com/app/2928270/TIME_SOUL) | Souls-like action platformer; parkour, time-as-resource — UE5.1 |
-| [U.N. Owen Was Her](https://store.steampowered.com/app/3420540/UN_Owen_Was_Her) | Third-person horror; AI, bullet-hell boss — UE5.3 |
-| [Olympus of the Heavens](https://store.steampowered.com/app/3358020/Olympus_of_the_Heavens) | Isometric co-op ARPG; 12 bosses, Steam co-op — UE5.3 |
-| [Blood Garden](https://kubrik.itch.io/bloodgarden) | Souls-like melee combat; stamina, parry, elemental — UE5.4 |
-| [ArtStation Portfolio](https://www.artstation.com/kubrik) | 3D modeling — characters, creatures, props, environments |
+| [Royal Jump](https://play.google.com/store/apps/details?id=com.Kubrick.RoyalJump) | Mobile precision platformer; touch controls, physics movement , UE5.7 |
+| [TIME SOUL](https://store.steampowered.com/app/2928270/TIME_SOUL) | Souls-like action platformer; parkour, time-as-resource , UE5.1 |
+| [U.N. Owen Was Her](https://store.steampowered.com/app/3420540/UN_Owen_Was_Her) | Third-person horror; AI, bullet-hell boss , UE5.3 |
+| [Olympus of the Heavens](https://store.steampowered.com/app/3358020/Olympus_of_the_Heavens) | Isometric co-op ARPG; 12 bosses, Steam co-op , UE5.3 |
+| [Blood Garden](https://kubrik.itch.io/bloodgarden) | Souls-like melee combat; stamina, parry, elemental , UE5.4 |
+| [ArtStation Portfolio](https://www.artstation.com/kubrik) | 3D modeling , characters, creatures, props, environments |
 
 ---
 
 ## Developer
 
-**Kubrik** — Developer & 3D Artist  
-9 years web development · 7 years 3D modeling · 5 years Unreal Engine C++  
-5+ shipped commercial games as sole developer.
-
+**Kubrik** , Developer & 3D Artist  
 [ArtStation](https://www.artstation.com/kubrik) · [Google Play](https://play.google.com/store/apps/details?id=com.Kubrick.RoyalJump) · [Steam](https://store.steampowered.com/search/?developer=Kubrik)
 
 ---
